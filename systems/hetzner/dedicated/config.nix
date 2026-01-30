@@ -41,7 +41,7 @@
   sudo nixos-install --flake github:a-h/nixos#hetzner-dedicated-x86_64
 
 */
-{ pkgs, config, adrianSSHKey, rootSSHKey, ... }:
+{ pkgs, config, nrnSSHKey, rootSSHKey, ... }:
 {
   nix.settings = {
     experimental-features = "nix-command flakes";
@@ -131,10 +131,10 @@
   ];
 
   documentation.nixos.enable = false;
-  time.timeZone = "Europe/London";
-  i18n.defaultLocale = "en_GB.UTF-8";
+  time.timeZone = "Etc/UTC";
+  i18n.defaultLocale = "nl_NL.UTF-8";
   console.keyMap = "us";
-  nix.settings.trusted-users = [ "adrian" "@wheel" ];
+  nix.settings.trusted-users = [ "nrn" "@wheel" ];
 
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/nvme0n1";
@@ -148,11 +148,11 @@
 
   users.users = {
     root.hashedPassword = "!"; # Disable root login
-    adrian = {
+    nrn = {
       isNormalUser = true;
       extraGroups = [ "wheel" "docker" ];
       openssh.authorizedKeys.keys = [
-        adrianSSHKey
+        nrnSSHKey
         rootSSHKey
       ];
     };
@@ -185,7 +185,7 @@
     allowedTCPPorts = [
       22 # SSH
       80 # For ACME challenges
-      443 # HTTPS for cache.adrianhesketh.com
+      443 # HTTPS for cache.norentkhy.com
     ];
   };
 
@@ -208,7 +208,7 @@
 
     # When adding a new host, don't force SSL until the certificate has been generated.
     # Enable web sockets for the Minio console.
-    virtualHosts."minio-console.adrianhesketh.com" = {
+    virtualHosts."minio-console.norentkhy.com" = {
       enableACME = true;
       forceSSL = true;
       locations."/" = {
@@ -220,7 +220,7 @@
         '';
       };
     };
-    virtualHosts."minio.adrianhesketh.com" = {
+    virtualHosts."minio.norentkhy.com" = {
       enableACME = true;
       forceSSL = true;
       locations."/" = {
@@ -241,8 +241,8 @@
   security.acme = {
     acceptTerms = true;
     certs = {
-      "minio-console.adrianhesketh.com".email = "acme@adrianhesketh.com";
-      "minio.adrianhesketh.com".email = "acme@adrianhesketh.com";
+      "minio-console.norentkhy.com".email = "acme@norentkhy.com";
+      "minio.norentkhy.com".email = "acme@norentkhy.com";
     };
   };
 
